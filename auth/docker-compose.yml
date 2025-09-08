@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  auth_api:
+    build:
+      context: .
+    depends_on:
+      - auth_db
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+    networks:
+      - dev-ops-project-network
+
+  auth_db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - auth_postgres_data:/var/lib/postgresql/data
+    networks:
+      - dev-ops-project-network
+
+volumes:
+  auth_postgres_data:
+
+networks:
+  dev-ops-project-network:
+    external: true
