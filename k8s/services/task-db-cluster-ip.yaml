@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: task-db-cluster-ip
+spec:
+  selector:
+    name: task_db
+  ports:
+    - targetPort: 5432
+      port: 5432

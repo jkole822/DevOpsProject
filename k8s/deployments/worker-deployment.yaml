@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: devops-project
+      tier: backend
+      name: worker
+  template:
+    metadata:
+      name: worker
+      labels:
+        app: devops-project
+        tier: backend
+        name: worker
+    spec:
+      containers:
+        - name: devops-project-worker
+          image: jkole822/devops-project-worker
+          envFrom:
+            - secretRef:
+                name: worker-secret

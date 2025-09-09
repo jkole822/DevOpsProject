@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devops-project
+      tier: cache
+      name: redis
+  template:
+    metadata:
+      name: redis
+      labels:
+        app: devops-project
+        tier: cache
+        name: redis
+    spec:
+      containers:
+        - name: devops-project-redis
+          image: redis:7

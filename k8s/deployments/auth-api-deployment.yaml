@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-api-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: devops-project
+      tier: backend
+      name: auth_api
+  template:
+    metadata:
+      name: auth_api
+      labels:
+        app: devops-project
+        tier: backend
+        name: auth_api
+    spec:
+      containers:
+        - name: devops-project-auth-api
+          image: jkole822/devops-project-auth-api
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: auth-secret

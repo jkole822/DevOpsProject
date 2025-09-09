@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-api-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: devops-project
+      tier: backend
+      name: task_api
+  template:
+    metadata:
+      name: task_api
+      labels:
+        app: devops-project
+        tier: backend
+        name: task_api
+    spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:15
+          command: [ "sh", "-c", "until pg_isready -h task-db-cluster-ip; do echo waiting; sleep 2; done" ]
+      containers:
+        - name: devops-project-task-api
+          image: jkole822/devops-project-task-api
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: tasks-secret

@@ -11,7 +11,6 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --only=production
 COPY --from=builder /app/dist ./dist
-EXPOSE 7000
 CMD ["node", "dist/index.js"]
 
 

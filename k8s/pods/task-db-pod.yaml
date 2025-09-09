@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tasks_db
+  labels:
+    app: devops-project
+    tier: database
+    name: tasks_db
+spec:
+  containers:
+    - name: devops-project-task-db
+      image: postgres:15
+      envFrom:
+        - secretRef:
+            name: tasks-secret

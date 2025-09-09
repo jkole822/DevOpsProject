@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis
+  labels:
+    app: devops-project
+    tier: cache
+    name: redis
+spec:
+  containers:
+    - name: devops-project-redis
+      image: redis:7

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: task_api
+  labels:
+    app: devops-project
+    tier: backend
+    name: task_api
+spec:
+  containers:
+    - name: devops-project-task-api
+      image: jkole822/devops-project-task-api
+      ports:
+        - containerPort: 8000
+      envFrom:
+        - secretRef:
+            name: tasks-secret

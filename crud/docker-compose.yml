@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   task_api:
+    image: jkole822/devops-project-task-api:latest
     build: .
     container_name: fastapi_app
     command: [ "./wait-for-postgres.sh", "tasks_db", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload" ]
@@ -47,6 +48,7 @@ services:
       - dev-ops-project-network
 
   migrate:
+    image: jkole822/devops-project-task-migration:latest
     build: .
     command: [ "./wait-for-postgres.sh", "tasks_db", "alembic", "upgrade", "head" ]
     volumes:

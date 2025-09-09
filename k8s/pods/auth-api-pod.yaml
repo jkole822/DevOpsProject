@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: auth_api
+  labels:
+    app: devops-project
+    tier: backend
+    name: auth_api
+spec:
+  containers:
+    - name: devops-project-auth-api
+      image: jkole822/devops-project-auth-api
+      ports:
+        - containerPort: 8080
+      envFrom:
+        - secretRef:
+            name: auth-secret
