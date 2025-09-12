@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 import asyncpg
@@ -14,6 +15,7 @@ load_dotenv()
 
 AUTH_URL = os.getenv("AUTH_URL")
 DATABASE_URL = os.getenv("DATABASE_URL")
+CACHE_TTL = 120
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -27,6 +29,13 @@ async def lifespan(app: FastAPI):
     await app.state.redis.close()
 
 app = FastAPI(lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["*"],
+)
 
 # --- Models ---
 class Task(BaseModel):
@@ -79,7 +88,8 @@ async def health():
 
 @app.get("/tasks", response_model=List[Task])
 async def list_tasks(user=Depends(get_user_from_auth)):
-    cached = await app.state.redis.get("tasks")
+    cache_key = f"tasks:{user['user_id']}"
+    cached = await app.state.redis.get(cache_key)
     if cached:
         tasks_data = json.loads(cached)
         return [Task(**t) for t in tasks_data]
@@ -91,13 +101,14 @@ async def list_tasks(user=Depends(get_user_from_auth)):
     for task in tasks_data:
         task["created_at"] = task["created_at"].isoformat()
 
-    await app.state.redis.set("tasks", json.dumps(tasks_data), ex=120)
+    await app.state.redis.set(cache_key, json.dumps(tasks_data), ex=CACHE_TTL)
 
     return [Task(**t) for t in tasks_data]
 
 @app.get("/tasks/{task_id}", response_model=Task)
 async def get_task(task_id: int, user=Depends(get_user_from_auth)):
-    cached = await app.state.redis.get(f"task:{task_id}")
+    cache_key = f"task:{user['user_id']}:{task_id}"
+    cached = await app.state.redis.get(cache_key)
     if cached:
         return Task(**json.loads(cached))
 
@@ -108,7 +119,9 @@ async def get_task(task_id: int, user=Depends(get_user_from_auth)):
 
     task_data = dict(row)
     task_data["created_at"] = task_data["created_at"].isoformat()
-    await app.state.redis.set(f"task:{task_id}", json.dumps(task_data), ex=120)
+
+    await app.state.redis.set(cache_key, json.dumps(task_data), ex=CACHE_TTL)
+
     return Task(**task_data)
 
 @app.post("/tasks", response_model=Task)
@@ -124,8 +137,14 @@ async def create_task(task: TaskCreate, user=Depends(get_user_from_auth)):
         )
         task_id = row["id"]
 
-    await app.state.redis.delete("tasks")
-    await app.state.redis.rpush("task_queue", str(task_id))
+    await app.state.redis.delete(f"tasks:{user['user_id']}")
+    await app.state.redis.rpush(
+        "JOB_QUEUE",
+        json.dumps({
+            "type": "COMPLETE_TASK",
+            "taskId": str(task_id)
+        })
+    )
 
     return Task(**dict(row))
 
@@ -143,9 +162,18 @@ async def update_task(task_id: int, task: TaskUpdate, user=Depends(get_user_from
         if not row:
             raise HTTPException(status_code=404, detail="Task not found")
 
-    await app.state.redis.delete(f"task:{task_id}")
-    await app.state.redis.delete("tasks")
-    await app.state.redis.rpush("task_queue", str(task_id))
+    await app.state.redis.delete(
+        f"task:{user['user_id']}:{task_id}",
+        f"tasks:{user['user_id']}"
+    )
+
+    await app.state.redis.rpush(
+        "JOB_QUEUE",
+        json.dumps({
+            "type": "COMPLETE_TASK",
+            "taskId": str(task_id)
+        })
+    )
 
     return Task(**dict(row))
 
@@ -163,7 +191,9 @@ async def delete_task(task_id: int, user=Depends(get_user_from_auth)):
         if not row:
             raise HTTPException(status_code=404, detail="Task not found")
 
-    await app.state.redis.delete(f"task:{task_id}")
-    await app.state.redis.delete("tasks")
+    await app.state.redis.delete(
+        f"task:{user['user_id']}:{task_id}",
+        f"tasks:{user['user_id']}"
+    )
 
     return Task(**dict(row))

@@ -55,13 +55,34 @@ Every Kubernetes YAML file must include these **root-level fields**:
      - Each container entry is a **dictionary** with fields like:
        - `name`: container name.
        - `image`: container image (e.g., `nginx`).
-   - Example:
-     ```yaml
-     spec:
-       containers:
-         - name: nginx-container
-           image: nginx
-     ```
+       - `ports`: **document** ports that are exposed
+       - `envFrom`: add environment variables from a k8s `Secret`
+         - Can alternatively use `env` for specific keys from the `Secret`:
+       - `volumeMounts`: Specify a k8s `PersistentVolumeClaim` to mount
+```yaml
+- env:
+    - name: POSTGRES_DB
+      valueFrom:
+        secretKeyRef:
+          name: auth-secret
+          key: POSTGRES_DB
+```
+
+- Example:
+```yaml
+spec:
+    containers:
+        - name: nginx-container
+          image: nginx
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+              name: auth-secret
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+```
 
 ---
 
@@ -87,6 +108,12 @@ kubectl get pods
 
 ```bash
 kubectl describe pod <pod-name>
+```
+
+- Inspect logs from a Pod:
+
+```bash
+kubectl logs <pod-id>
 ```
 
 ## Key Takeaways

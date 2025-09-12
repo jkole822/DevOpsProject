@@ -1,0 +1,6 @@
+export { default as Account } from './Account.vue'
+export { default as CreateTask } from './CreateTask.vue'
+export { default as CreateUser } from './CreateUser.vue'
+export { default as Dashboard } from './Dashboard.vue'
+export { default as EditTask } from './EditTask.vue'
+export { default as Login } from './Login.vue'

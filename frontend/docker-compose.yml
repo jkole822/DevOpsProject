@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  app:
+    image: jkole822/devops-project-app:latest
+    build: .
+    networks:
+      - dev-ops-project-network
+
+networks:
+  dev-ops-project-network:
+    external: true

@@ -161,6 +161,12 @@ kubectl rollout history deployment/<name>
 kubectl rollout undo deployment/<name>
 ```
 
+- Restart:
+
+```bash
+kubectl rollout restart deployment/<name>
+```
+
 - Rollback to specific revision:
 
 ```bash

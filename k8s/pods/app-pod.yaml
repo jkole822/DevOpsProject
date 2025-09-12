@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app
+  labels:
+    app: devops-project
+    tier: frontend
+    name: app
+spec:
+  containers:
+    - name: devops-project-app
+      image: jkole822/devops-project-app
+      ports:
+        - containerPort: 80
+      envFrom:
+        - secretRef:
+            name: app-secret

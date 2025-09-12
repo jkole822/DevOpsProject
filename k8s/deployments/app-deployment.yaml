@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: devops-project
+      tier: frontend
+      name: app
+  template:
+    metadata:
+      name: app
+      labels:
+        app: devops-project
+        tier: frontend
+        name: app
+    spec:
+      containers:
+        - name: devops-project-app
+          image: jkole822/devops-project-app
+          ports:
+            - containerPort: 80
+          envFrom:
+            - secretRef:
+                name: app-secret

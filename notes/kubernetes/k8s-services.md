@@ -54,6 +54,12 @@ kubectl get svc
 curl http://<NodeIP>:30008 → forwards → Pod’s TargetPort (80)
 ```
 
+Connect to a Node Port from the host:
+- Create tunnel for service:
+```bash
+minikube service <service-name> 
+```
+
 ## 📄 Service YAML Definition (NodePort)
 
 ```yaml
