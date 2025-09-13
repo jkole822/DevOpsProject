@@ -261,7 +261,7 @@ pub async fn login(
     match sqlx::query_as::<_, SessionRow>(
         "INSERT INTO sessions (token, user_id, expires_at) VALUES ($1, $2, $3) RETURNING id, token, user_id, created_at, expires_at",
     )
-        .bind(Uuid::new_v4().to_string())
+        .bind(Uuid::new_v4())
         .bind(user.id)
         .bind(expires_at)
         .fetch_one(&appState.pool)
