@@ -1,0 +1,20 @@
+apiVersion: v2
+name: dev-ops-project
+version: 0.1.0
+dependencies:
+  - name: auth-api
+    version: 0.1.0
+    repository: "file://../charts/auth-api"
+    condition: auth-api.enabled
+  - name: task-api
+    version: 0.1.0
+    repository: "file://../charts/task-api"
+    condition: task-api.enabled
+  - name: worker
+    version: 0.1.0
+    repository: "file://../charts/worker"
+    condition: worker.enabled
+  - name: frontend
+    version: 0.1.0
+    repository: "file://../charts/frontend"
+    condition: frontend.enabled

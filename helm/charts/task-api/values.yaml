@@ -1,0 +1,47 @@
+replicaCount: 1
+secretName: task-secret
+image:
+  repository: jkole822/devops-project-task-api
+  tag: latest
+labels:
+  app: devops-project
+  tier: backend
+  name: task_api
+ports:
+  containerPort: 8000
+  nodePort: 30001
+  port: 80
+ingress:
+  enabled: true
+  host: task.local
+  path: /
+  pathType: Prefix
+db:
+  image: postgres:15
+  labels:
+    app: devops-project
+    tier: database
+    name: task_db
+  ports:
+    containerPort: 5432
+migration:
+  image:
+    repository: jkole822/devops-project-task-migration
+    tag: latest
+  labels:
+    app: devops-project
+    tier: migration
+    name: task_migration
+  spec:
+    restartPolicy: OnFailure
+    initContainers:
+      name: wait-for-postgres
+      command: [ "sh", "-c", "until pg_isready -h task-api-db-cluster-ip; do echo waiting; sleep 2; done" ]
+    containers:
+      command: ["alembic", "upgrade", "head"]
+volumes:
+  accessModes: ReadWriteOnce
+  mountPath: /var/lib/postgresql/data
+  name: postgres-data
+  storage: 1Gi
+

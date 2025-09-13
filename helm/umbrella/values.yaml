@@ -1,0 +1,71 @@
+global:
+  namespace: dev
+  ingress:
+    className: nginx
+    baseDomain: "dev.example.com"
+
+auth-api:
+  fullnameOverride: auth-api
+  enabled: true
+  replicaCount: 2
+  secretName: auth-secret
+  image:
+    repository: jkole822/devops-project-auth-api
+    tag: latest
+  labels:
+    app: devops-project
+    tier: backend
+    name: auth_api
+  db:
+    labels:
+      app: devops-project
+      tier: database
+      name: auth_db
+
+task-api:
+  fullnameOverride: task-api
+  enabled: true
+  replicaCount: 2
+  secretName: task-secret
+  image:
+    repository: jkole822/devops-project-task-api
+    tag: latest
+  labels:
+    app: devops-project
+    tier: backend
+    name: task_api
+  db:
+    labels:
+      app: devops-project
+      tier: database
+      name: task_db
+
+worker:
+  fullnameOverride: worker
+  enabled: true
+  replicaCount: 2
+  secretName: worker-secret
+  image:
+    repository: jkole822/devops-project-worker
+    tag: latest
+  labels:
+    app: devops-project
+    tier: backend
+    name: worker
+  redis:
+    labels:
+      app: devops-project
+      tier: cache-queue
+      name: redis
+
+frontend:
+  fullnameOverride: frontend
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: jkole822/devops-project-app
+    tag: latest
+  labels:
+    app: devops-project
+    tier: frontend
+    name: app

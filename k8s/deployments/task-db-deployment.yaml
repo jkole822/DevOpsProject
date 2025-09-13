@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: task-db-deployment
+  name: task-api-db
 spec:
   replicas: 1
   selector:
@@ -24,17 +24,17 @@ spec:
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
-                  name: tasks-secret
+                  name: task-secret
                   key: POSTGRES_DB
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: tasks-secret
+                  name: task-secret
                   key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: tasks-secret
+                  name: task-secret
                   key: POSTGRES_PASSWORD
           volumeMounts:
             - name: postgres-data
@@ -42,4 +42,4 @@ spec:
       volumes:
         - name: postgres-data
           persistentVolumeClaim:
-            claimName: task-pvc
+            claimName: task-api-pvc

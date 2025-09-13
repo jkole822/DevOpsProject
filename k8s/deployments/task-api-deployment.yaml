@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: task-api-deployment
+  name: task-api
 spec:
   replicas: 3
   selector:
@@ -20,7 +20,7 @@ spec:
       initContainers:
         - name: wait-for-postgres
           image: postgres:15
-          command: [ "sh", "-c", "until pg_isready -h task-db-cluster-ip; do echo waiting; sleep 2; done" ]
+          command: [ "sh", "-c", "until pg_isready -h task-api-db-cluster-ip; do echo waiting; sleep 2; done" ]
       containers:
         - name: devops-project-task-api
           image: jkole822/devops-project-task-api
@@ -28,4 +28,4 @@ spec:
             - containerPort: 8000
           envFrom:
             - secretRef:
-                name: tasks-secret
+                name: task-secret

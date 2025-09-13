@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Values.labels.app | default "devops-project" }}
+spec:
+  replicas: {{ .Values.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ .Values.labels.app | default "devops-project" }}
+      tier: {{ .Values.labels.tier | default "backend" }}
+      name: {{ .Values.labels.name | default "worker" }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.labels.app | default "devops-project" }}
+        tier: {{ .Values.labels.tier | default "backend" }}
+        name: {{ .Values.labels.name | default "worker" }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          envFrom:
+            - secretRef:
+                name: {{ .Values.secretName | default "worker-secret" }}

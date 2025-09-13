@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Chart.Name }}-pvc
+spec:
+  accessModes:
+    - {{ .Values.volumes.accessModes }}
+  resources:
+    requests:
+      storage: {{ .Values.volumes.storage }}

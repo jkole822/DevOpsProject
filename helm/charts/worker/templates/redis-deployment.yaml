@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.redis.labels.app | default "devops-project" }}
+      tier: {{ .Values.redis.labels.tier | default "cache-queue" }}
+      name: {{ .Values.redis.labels.name | default "redis" }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.redis.labels.app | default "devops-project" }}
+        tier: {{ .Values.redis.labels.tier | default "cache-queue" }}
+        name: {{ .Values.redis.labels.name | default "redis" }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-db
+          image: {{ .Values.redis.image | default "redis:7" }}

@@ -1,0 +1,12 @@
+replicaCount: 1
+image:
+  repository: jkole822/devops-project-app
+  tag: latest
+labels:
+  app: devops-project
+  tier: frontend
+  name: app
+ports:
+  containerPort: 80
+  nodePort: 30002
+

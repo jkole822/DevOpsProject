@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: task-pvc
+  name: task-api-pvc
 spec:
   accessModes:
     - ReadWriteOnce

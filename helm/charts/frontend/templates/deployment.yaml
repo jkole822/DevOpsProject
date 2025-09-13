@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Values.labels.app | default "devops-project" }}
+spec:
+  replicas: {{ .Values.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ .Values.labels.app | default "devops-project" }}
+      tier: {{ .Values.labels.tier | default "frontend" }}
+      name: {{ .Values.labels.name | default "app" }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.labels.app | default "devops-project" }}
+        tier: {{ .Values.labels.tier | default "frontend" }}
+        name: {{ .Values.labels.name | default "app" }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          ports:
+            - containerPort: {{ .Values.ports.containerPort | default 8000 }}

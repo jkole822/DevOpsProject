@@ -1,0 +1,32 @@
+replicaCount: 1
+secretName: auth-secret
+image:
+  repository: jkole822/devops-project-auth-api
+  tag: latest
+labels:
+  app: devops-project
+  tier: backend
+  name: auth_api
+ports:
+  containerPort: 8080
+  nodePort: 30000
+  port: 80
+ingress:
+  enabled: true
+  host: auth.local
+  path: /
+  pathType: Prefix
+db:
+  image: postgres:15
+  labels:
+    app: devops-project
+    tier: database
+    name: auth_db
+  ports:
+    containerPort: 5432
+volumes:
+  accessModes: ReadWriteOnce
+  mountPath: /var/lib/postgresql/data
+  name: postgres-data
+  storage: 1Gi
+

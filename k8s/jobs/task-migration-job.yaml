@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: task-migration-job
+  name: task-api-job
 spec:
   template:
     metadata:
@@ -15,11 +15,11 @@ spec:
       initContainers:
         - name: wait-for-postgres
           image: postgres:15
-          command: [ "sh", "-c", "until pg_isready -h task-db-cluster-ip; do echo waiting; sleep 2; done" ]
+          command: [ "sh", "-c", "until pg_isready -h task-api-db-cluster-ip; do echo waiting; sleep 2; done" ]
       containers:
         - name: devops-project-task-migration
           image: jkole822/devops-project-task-migration
           command: ["alembic", "upgrade", "head"]
           envFrom:
             - secretRef:
-                name: tasks-secret
+                name: task-secret

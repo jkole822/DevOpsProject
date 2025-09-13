@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Chart.Name }}-job
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.migration.labels.app | default "devops-project" }}
+        tier: {{ .Values.migration.labels.tier | default "migration" }}
+        name: {{ .Values.migration.labels.name | default "task_migration" }}
+    spec:
+      restartPolicy: {{ .Values.migration.spec.restartPolicy | default "OnFailure" }}
+      initContainers:
+        - name: wait-for-postgres
+          image: {{ .Values.db.image | default "postgres:15" }}
+          command: [ "sh", "-c", "until pg_isready -h task-api-db-cluster-ip; do echo waiting; sleep 2; done" ]
+      containers:
+        - name: {{ .Chart.Name }}-job
+          image: "{{ .Values.migration.image.repository | default "jkole822/devops-project-task-migration" }}:{{ .Values.migration.image.tag | default .Chart.AppVersion }}"
+          command: ["alembic", "upgrade", "head"]
+          envFrom:
+            - secretRef:
+                name: {{ .Values.secretName }}

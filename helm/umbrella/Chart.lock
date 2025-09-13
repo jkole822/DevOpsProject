@@ -1,0 +1,15 @@
+dependencies:
+- name: auth-api
+  repository: file://../charts/auth-api
+  version: 0.1.0
+- name: task-api
+  repository: file://../charts/task-api
+  version: 0.1.0
+- name: worker
+  repository: file://../charts/worker
+  version: 0.1.0
+- name: frontend
+  repository: file://../charts/frontend
+  version: 0.1.0
+digest: sha256:d6ea1873879db49f33bfd57d04f7b8e01c2bc9dc65055c7e46825dd21d38618f
+generated: "2025-09-12T18:33:12.190387-04:00"

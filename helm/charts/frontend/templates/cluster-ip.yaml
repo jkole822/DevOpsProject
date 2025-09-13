@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-cluster-ip
+spec:
+  selector:
+    app: {{ .Values.labels.app | default "devops-project" }}
+    tier: {{ .Values.labels.tier | default "frontend" }}
+    name: {{ .Values.labels.name | default "app" }}
+  ports:
+    - targetPort: {{ .Values.ports.containerPort | default 80 }}
+      port: {{ .Values.ports.port | default 80 }}

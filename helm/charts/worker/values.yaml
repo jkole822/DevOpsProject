@@ -1,0 +1,18 @@
+replicaCount: 1
+secretName: worker-secret
+image:
+  repository: jkole822/devops-project-worker
+  tag: latest
+labels:
+  app: devops-project
+  tier: backend
+  name: worker
+redis:
+  image: redis:7
+  labels:
+    app: devops-project
+    tier: cache-queue
+    name: redis
+  ports:
+    containerPort: 6379
+
