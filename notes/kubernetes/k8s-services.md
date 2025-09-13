@@ -60,6 +60,11 @@ Connect to a Node Port from the host:
 minikube service <service-name> 
 ```
 
+Forward a port on your local machine to a port on a pod inside the cluster:
+```bash
+kubectl port-forward svc/<service name> <host port>:<target port> 
+```
+
 ## 📄 Service YAML Definition (NodePort)
 
 ```yaml
