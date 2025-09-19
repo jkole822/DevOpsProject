@@ -10,3 +10,4 @@ spec:
   ports:
     - targetPort: {{ .Values.ports.containerPort | default 80 }}
       port: {{ .Values.ports.port | default 80 }}
+

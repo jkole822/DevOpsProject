@@ -9,4 +9,9 @@ labels:
 ports:
   containerPort: 80
   nodePort: 30002
+ingress:
+  enabled: true
+  host: my-app.local
+  path: /
+  pathType: Prefix
 
