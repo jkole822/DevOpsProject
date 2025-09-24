@@ -8,6 +8,11 @@
   - **Powerful enough** to automate even the most complex deployments.
 - Reduces the need for developing and maintaining complex scripts.
 - Tasks that once required extensive scripting can now be done with just a few lines in an **Ansible playbook**.
+- Use cases:
+  - Monolithic VM-based
+  - Legacy applications or bare-metal servers
+  - Teams needing full control over server configuration
+  - Set up base OS for K8S
 
 ## Why Use Ansible?
 
