@@ -11,7 +11,19 @@ ports:
   nodePort: 30002
 ingress:
   enabled: true
-  host: my-app.local
-  path: /
+  paths:
+    frontend:
+      path: /
+      serviceName: frontend-cluster-ip
+      port: 80
+    auth:
+      path: /auth
+      loginPath: /login
+      serviceName: auth-api-cluster-ip
+      port: 8080
+    task:
+      path: /task
+      serviceName: task-api-cluster-ip
+      port: 8000
   pathType: Prefix
 

@@ -11,11 +11,6 @@ ports:
   containerPort: 8000
   nodePort: 30001
   port: 80
-ingress:
-  enabled: true
-  host: task.local
-  path: /
-  pathType: Prefix
 db:
   image: postgres:15
   labels:
@@ -44,4 +39,5 @@ volumes:
   mountPath: /var/lib/postgresql/data
   name: postgres-data
   storage: 1Gi
+  subPath: pgdata
 

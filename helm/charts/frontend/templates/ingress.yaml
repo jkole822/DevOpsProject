@@ -9,14 +9,35 @@ metadata:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
 spec:
+  ingressClassName: alb
   rules:
-    - host: {{ .Values.ingress.host | default "my-app.local" }}
-      http:
+    - http:
         paths:
-          - path: {{ .Values.ingress.path | default "/" }}
+          - path: {{ .Values.ingress.paths.frontend.path | default "/" }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.ingress.paths.frontend.serviceName | default "frontend-cluster-ip" }}
+                port:
+                  number: {{ .Values.ingress.paths.frontend.port | default 80 }}
+          - path: {{ .Values.ingress.paths.auth.path | default "/auth" }}
             pathType: {{ .Values.ingress.pathType | default "Prefix" }}
             backend:
               service:
-                name: {{ .Chart.Name }}-cluster-ip
+                name: {{ .Values.ingress.paths.auth.serviceName | default "auth-api-cluster-ip" }}
                 port:
-                  number: {{ .Values.ports.containerPort | default 80 }}
+                  number: {{ .Values.ingress.paths.auth.port | default 8080 }}
+          - path: {{ .Values.ingress.paths.auth.loginPath | default "/login" }}
+            pathType: {{ .Values.ingress.pathType | default "Prefix" }}
+            backend:
+              service:
+                name: {{ .Values.ingress.paths.auth.serviceName | default "auth-api-cluster-ip" }}
+                port:
+                  number: {{ .Values.ingress.paths.auth.port | default 8080 }}
+          - path: {{ .Values.ingress.paths.task.path | default "/task" }}
+            pathType: {{ .Values.ingress.pathType | default "Prefix" }}
+            backend:
+              service:
+                name: {{ .Values.ingress.paths.task.serviceName | default "task-api-cluster-ip" }}
+                port:
+                  number: {{ .Values.ingress.paths.task.port | default 8000 }}

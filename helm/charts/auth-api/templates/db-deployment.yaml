@@ -38,6 +38,7 @@ spec:
           volumeMounts:
             - name: {{ .Values.volumes.name | default "postgres-data" }}
               mountPath: {{ .Values.volumes.mountPath | default "/var/lib/postgresql/data" }}
+              subPath: {{ .Values.volumes.subPath | default "pgdata" }}
       volumes:
         - name: {{ .Values.volumes.name | default "postgres-data" }}
           persistentVolumeClaim:
